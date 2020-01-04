@@ -57,14 +57,60 @@ class Solution:
                 
     def pathSum2(self, root: TreeNode, target: int):
         # 递归
+        if not root:
+            return []
+        if not root.left and not root.right and target == root.val:
+            return [[root.val]]
+        tmp = self.pathSum(root.left, target - root.val) + self.pathSum(root.right, target - root.val)
+        return [[root.val]+i for i in tmp]
         
     
     def pathSum3(self, root: TreeNode, target: int):
         # BFS + queue
-        
+        if not root:
+            return []
+        res = []
+        queue = [(root, root.val, [root.val])]
+        while queue:
+            curr, val, ls = queue.pop(0)
+            if not curr.left and not curr.right and val == target:
+                res.append(ls)
+            if curr.left:
+                queue.append((curr.left, val+curr.left.val, ls+[curr.left.val]))
+            if curr.right:
+                queue.append((curr.right, val+curr.right.val, ls+[curr.right.val]))
+        return res
     
     def pathSum4(self, root: TreeNode, target: int):
-        # DFS + stack
-        
-        
+        # DFS + stack I
+        if not root:
+            return []
+        result = []
+        stack = [(root, [root.val])]
+        while stack:
+            node, path = stack.pop()
+            if not node.left and not node.right and sum(path) == target:
+                result.append(path)
+            if node.right:
+                stack.append((node.right, path + [node.right.val]))
+            if node.left:
+                stack.append((node.left, path + [node.left.val]))
+        return result
+       
+    def pathSum5(self, root: TreeNode, target: int):
+        # DFS + stack II
+        if not root:
+            return []
+        result = []
+        stack = [(root, target - root.val, [root.val])]
+        while stack:
+            curr, val, ls = stack.pop()
+            if not curr.left and not curr.right and val == 0:
+                result.append(ls)
+            if curr.right:
+                stack.append((curr.right, val - curr.right.val, ls + [curr.right.val]))
+            if curr.left:
+                stack.append((curr.left, val - curr.left.val, ls + [curr.left.val]))
+                
+        return result
         
